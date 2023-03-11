@@ -215,6 +215,7 @@ $(function() {
         $('div.head-label').html('<h5 class="card-title mb-0">DataTable with Buttons</h5>');
     }
 });
+var saveId = "";
 function viewUser(id,btnClick) {
     <?php header('Content-type: application/json'); ?>
     $.ajax({
@@ -223,7 +224,9 @@ function viewUser(id,btnClick) {
         dataType: 'json',
         success: function(data)
         {
+            console.log('user')
             if (btnClick === 1) {
+                console.log('user edit')
                 $('#modalEdit').modal('show'); // show bootstrap modal when complete loaded
                 $('.modalScrollableTitle').text('Edit User'); // Set title to Bootstrap modal title
                 $('#idEdit').val(data.id);
@@ -233,12 +236,16 @@ function viewUser(id,btnClick) {
                 $('#statusEdit').val(data.status);
                 $('#projectEdit').val(data.project);
             } else if (btnClick === 2) {
+                console.log('user delete')
                 $('#modalDelete').modal('show');
                 $('.modalScrollableTitle').text('Hapus User');
+                saveId=data.id;
                 $('#idDelete').val(data.id);
+                $('#idDelete2').val(data.id);
                 $('#usernameDelete').val(data.username);
                 $('#emailDelete').val(data.email);
             } else if (btnClick === 3) {
+                console.log('user view')
                 $('#modalView').modal('show');
                 $('.modalScrollableTitle').text('View User');
                 $('#idView').val(data.id);
@@ -256,30 +263,6 @@ function viewUser(id,btnClick) {
         }
     });
 };
-function userDelete(id,username) {
-    $('#id').text(id);
-    $('#username').text(username);
-    <?php header('Content-type: application/json'); ?>
-    $.ajax({
-        type: 'POST',
-        url: '<?= base_url('user/delete/')?>' + id,
-        dataType: 'json',
-        success: function (data) {
-            if (data.success == false) {
-                console.log(data.errorDetail);
-                alert('Error deleting data');
-            } else {
-                $('.datatables-basic').DataTable().ajax.reload();
-                $("#modalDelete").modal('hide');
-                $(function () {
-                    toastr.success("Data berhasil di hapus")
-                });
-            }
-        }
-    });
-}
-</script>
-<script>
 $(function () {
     toastr.options = {
         "closeButton": false,
@@ -338,14 +321,15 @@ $(function() {
     {
         event.preventDefault();
         var formData = {
-            'id'        : $('input[name=id]').val(),
-            'username'  : $('input[name=username]').val(),
-            'email'     : $('input[name=email]').val(),
-            'gender'    : $('#gender option:selected').val(),
-            'status'    : $('#status option:selected').val(),
-            'project'   : $('#project option:selected').val(),
+            'id'        : $('input[name=idEdit]').val(),
+            'username'  : $('input[name=usernameEdit]').val(),
+            'email'     : $('input[name=emailEdit]').val(),
+            'gender'    : $('#genderEdit option:selected').val(),
+            'status'    : $('#statusEdit option:selected').val(),
+            'project'   : $('#projectEdit option:selected').val(),
         };
         // console.log(formData)
+        console.log('user edit call-data')
         $.ajax({
             type        : 'POST',
             url         : '<?= base_url('user/edit/')?>',
@@ -354,10 +338,12 @@ $(function() {
             success     : function(data){
                 if (data.success == false)
                 {
+                    console.log('user edit send-data error')
                     console.log(data.errorDetail)
                 }
                 else
                 {
+                    console.log('user edit send-data success')
                     $('.datatables-basic').DataTable().ajax.reload();
                     $('#fromEdit').trigger('reset');
                     $("#modalEdit").modal('hide');
@@ -373,28 +359,28 @@ $(function() {
     $('#deleteUserBtn').click(function()
     {
         event.preventDefault();
-        var id = $('input[name=id]').val();
-        console.log(id)
-        //$.ajax({
-        //    type        : 'get',
-        //    url         : '<?php //= base_url('user/delete/')?>//'+id,
-        //    dataType    : 'json',
-        //    success     : function(data){
-        //        if (data.success == false)
-        //        {
-        //            console.log(data.errorDetail)
-        //        }
-        //        else
-        //        {
-        //            $('.datatables-basic').DataTable().ajax.reload();
-        //            $('#fromEdit').trigger('reset');
-        //            $("#modalEdit").modal('hide');
-        //            $(function () {
-        //                toastr.success("Data berhasil di edit")
-        //            });
-        //        }
-        //    }
-        //});
+        $.ajax({
+            type        : 'GET',
+            url         : '<?= base_url('user/delete/')?>'+saveId,
+            dataType    : 'json',
+            success     : function(data){
+                if (data.success == false)
+                {
+                    console.log('user edit send-data error')
+                    console.log(data.errorDetail)
+                }
+                else
+                {
+                    console.log('user edit send-data success')
+                    $('.datatables-basic').DataTable().ajax.reload();
+                    $('#fromDelete').trigger('reset');
+                    $("#modalDelete").modal('hide');
+                    $(function () {
+                        toastr.success("Data berhasil di hapus")
+                    });
+                }
+            }
+        });
     });
 });
 </script>
@@ -437,33 +423,33 @@ $(function() {
                     <div class="modal-body">
                         <div class="mb-3">
                             <label class="form-label">ID</label>
-                            <input type="text" class="form-control" name="id" id="idEdit" disabled/>
+                            <input type="text" class="form-control" name="idEdit" id="idEdit" disabled/>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Username</label>
-                            <input type="text" class="form-control" name="username" id="usernameEdit" disabled/>
+                            <input type="text" class="form-control" name="usernameEdit" id="usernameEdit" disabled/>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Email</label>
-                            <input type="text" class="form-control" name="email" id="emailEdit" disabled/>
+                            <input type="text" class="form-control" name="emailEdit" id="emailEdit" disabled/>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Gender</label>
-                            <select id="genderEdit" class="form-select" disabled>
+                            <select id="genderEdit" class="form-select">
                                 <option value="laki-laki">Laki-Laki</option>
                                 <option value="perempuan">Perempuan</option>
                             </select>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Status</label>
-                            <select id="statusEdit" class="select2 form-select">
+                            <select id="statusEdit" class="select2 form-select" data-allow-clear="true">
                                 <option value="active" selected>Active</option>
                                 <option value="inactive" selected>Inactive</option>
                             </select>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Project</label>
-                            <select name="project" id="projectEdit" class="select2 form-select">
+                            <select name="projectEdit" id="projectEdit" class="select2 form-select" data-allow-clear="true">
                                 <option value="php">PHP</option>
                                 <option value="js">JS</option>
                                 <option value="ruby">Ruby</option>
@@ -485,22 +471,22 @@ $(function() {
             <div class="modal-content">
                 <form id="formEdit">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="modalScrollableTitle">Edit User</h5>
+                        <h5 class="modal-title" id="modalScrollableTitle">View User</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                         </button>
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
                             <label class="form-label">ID</label>
-                            <input type="text" class="form-control" name="id" id="idView" disabled/>
+                            <input type="text" class="form-control" name="idView" id="idView" disabled/>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Username</label>
-                            <input type="text" class="form-control" name="username" id="usernameView" disabled/>
+                            <input type="text" class="form-control" name="usernameView" id="usernameView" disabled/>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Email</label>
-                            <input type="text" class="form-control" name="email" id="emailView" disabled/>
+                            <input type="text" class="form-control" name="emailView" id="emailView" disabled/>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Gender</label>
@@ -511,14 +497,14 @@ $(function() {
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Status</label>
-                            <select id="statusView" class="select2 form-select" data-allow-clear="true">
+                            <select id="statusView" class="select2 form-select" data-allow-clear="true" disabled>
                                 <option value="active" selected>Active</option>
                                 <option value="inactive" selected>Inactive</option>
                             </select>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Project</label>
-                            <select name="project" id="projectView" class="select2 form-select" data-allow-clear="true">
+                            <select name="projectView" id="projectView" class="select2 form-select" data-allow-clear="true" disabled>
                                 <option value="php">PHP</option>
                                 <option value="js">JS</option>
                                 <option value="ruby">Ruby</option>
@@ -527,8 +513,7 @@ $(function() {
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="reset" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary btn-edit" id="editUserBtn">Simpan</button>
+                        <button type="reset" class="btn btn-primary" data-bs-dismiss="modal">Oke</button>
                     </div>
                 </form>
             </div>
@@ -538,29 +523,52 @@ $(function() {
     <div class="modal fade" id="modalDelete" tabindex="-1" aria-labelledby="modalScrollableTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable" role="document">
             <div class="modal-content">
-                <form id="fromAdd">
+                <form id="fromDelete">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="modalScrollableTitle">Tambah User</h5>
+                        <h5 class="modal-title" id="modalScrollableTitle">Edit User</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                         </button>
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
                             <label class="form-label">ID</label>
-                            <input type="text" class="form-control" name="id" id="idDelete" disabled/>
+                            <input type="text" class="form-control" name="idDelete" id="idDelete" disabled/>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Username</label>
-                            <input type="text" class="form-control" name="username" id="usernameDelete" disabled/>
+                            <input type="text" class="form-control" name="usernameDelete" id="usernameDelete" disabled/>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Email</label>
-                            <input type="text" class="form-control" name="email" id="emailDelete" disabled/>
+                            <input type="text" class="form-control" name="emailDelete" id="emailDelete" disabled/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Gender</label>
+                            <select id="genderDelete" class="form-select" disabled>
+                                <option value="laki-laki">Laki-Laki</option>
+                                <option value="perempuan">Perempuan</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Status</label>
+                            <select id="statusDelete" class="select2 form-select" disabled>
+                                <option value="active" selected>Active</option>
+                                <option value="inactive" selected>Inactive</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Project</label>
+                            <select name="project" id="projectDelete" class="select2 form-select" disabled>
+                                <option value="php">PHP</option>
+                                <option value="js">JS</option>
+                                <option value="ruby">Ruby</option>
+                                <option value="python">Python</option>
+                            </select>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="reset" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary" id="deleteUserBtn">Tambah</button>
+                        <button type="reset" class="btn btn-primary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-danger" id="deleteUserBtn">Hapus</button>
                     </div>
                 </form>
             </div>
@@ -589,7 +597,7 @@ $(function() {
                             <label class="form-label">Gender</label>
                             <select name="gender" id="gender" class="form-select" data-allow-clear="true" required>
                                 <option value="laki-laki">Laki-Laki</option>
-                                <option value="permpuan">Perempuan</option>
+                                <option value="perempuan">Perempuan</option>
                             </select>
                         </div>
                         <div class="mb-3">

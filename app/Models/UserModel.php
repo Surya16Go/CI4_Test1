@@ -59,7 +59,16 @@ class UserModel extends Model
 
     public function addUser($data) {
         $this->builder('user')->insert($data);
-        return $this->db->insertID();
+        if ($this->db->transStatus() === FALSE)
+        {
+            $this->db->transRollback();
+            return false;
+        }
+        else
+        {
+            $this->db->transCommit();
+            return true;
+        }
     }
 
     public function editUser($id, $data) {
@@ -77,7 +86,16 @@ class UserModel extends Model
     }
 
     public function deleteUser($id) {
-        $query = $this->builder->delete(array('id'=>$id));
-        return $query->getResult();
+        $this->builder('user')->where(['id'=>$id])->delete();
+        if ($this->db->transStatus() === FALSE)
+        {
+            $this->db->transRollback();
+            return false;
+        }
+        else
+        {
+            $this->db->transCommit();
+            return true;
+        }
     }
 }

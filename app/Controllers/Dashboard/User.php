@@ -36,8 +36,8 @@ class User extends BaseController
             'status'    => $this->request->getPost('status'),
             'project'   => $this->request->getPost('project'),
         );
-        $this->User->addUser($data);
-        echo json_encode(array("status" => TRUE));
+        $query = $this->User->addUser($data);
+        echo json_encode($query);
     }
     public function editUser()
     {
