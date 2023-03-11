@@ -337,7 +337,6 @@ $(function() {
     $('#editUserBtn').click(function()
     {
         event.preventDefault();
-        var id = $('input[name=id]').val();
         var formData = {
             'id'        : $('input[name=id]').val(),
             'username'  : $('input[name=username]').val(),
@@ -368,6 +367,34 @@ $(function() {
                 }
             }
         });
+    });
+});
+$(function() {
+    $('#deleteUserBtn').click(function()
+    {
+        event.preventDefault();
+        var id = $('input[name=id]').val();
+        console.log(id)
+        //$.ajax({
+        //    type        : 'get',
+        //    url         : '<?php //= base_url('user/delete/')?>//'+id,
+        //    dataType    : 'json',
+        //    success     : function(data){
+        //        if (data.success == false)
+        //        {
+        //            console.log(data.errorDetail)
+        //        }
+        //        else
+        //        {
+        //            $('.datatables-basic').DataTable().ajax.reload();
+        //            $('#fromEdit').trigger('reset');
+        //            $("#modalEdit").modal('hide');
+        //            $(function () {
+        //                toastr.success("Data berhasil di edit")
+        //            });
+        //        }
+        //    }
+        //});
     });
 });
 </script>
@@ -484,14 +511,14 @@ $(function() {
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Status</label>
-                            <select id="statusView" class="select2 form-select">
+                            <select id="statusView" class="select2 form-select" data-allow-clear="true">
                                 <option value="active" selected>Active</option>
                                 <option value="inactive" selected>Inactive</option>
                             </select>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Project</label>
-                            <select name="project" id="projectView" class="select2 form-select">
+                            <select name="project" id="projectView" class="select2 form-select" data-allow-clear="true">
                                 <option value="php">PHP</option>
                                 <option value="js">JS</option>
                                 <option value="ruby">Ruby</option>
@@ -560,21 +587,21 @@ $(function() {
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Gender</label>
-                            <select name="gender" id="gender" class="form-select">
+                            <select name="gender" id="gender" class="form-select" data-allow-clear="true" required>
                                 <option value="laki-laki">Laki-Laki</option>
                                 <option value="permpuan">Perempuan</option>
                             </select>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Status</label>
-                            <select name="status" id="status" class="select2 form-select" required>
+                            <select name="status" id="status" class="select2 form-select" data-allow-clear="true" required>
                                 <option value="active" selected>Active</option>
                                 <option value="inactive" selected>Inactive</option>
                             </select>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Project</label>
-                            <select name="project" id="project" class="select2 form-select">
+                            <select name="project" id="project" class="select2 form-select" data-allow-clear="true">
                                 <option value="php">PHP</option>
                                 <option value="js">JS</option>
                                 <option value="ruby">Ruby</option>
