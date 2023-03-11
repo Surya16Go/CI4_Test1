@@ -51,9 +51,18 @@ class User extends BaseController
             'project'   => $this->request->getPost('project'),
             'updated_at'    => date('Y-m-d H:i:s'),
         );
-        $query = $this->User->editUser(['id'=> $id],$data);
-        dd($data);
-        return redirect()->to(base_url('user'));
+        $data2 = array(
+            'id'        => $_POST['id'],
+            'username'  => $_POST['username'],
+            'email'     => $_POST['email'],
+            'gender'    => $_POST['gender'],
+            'status'    => $_POST['status'],
+            'project'   => $_POST['project'],
+            'updated_at'    => date('Y-m-d H:i:s'),
+        );
+//        $query = $this->User->editUser(['id'=> $id],$data);
+        var_dump($data2);
+//        return redirect()->to(base_url('user'));
     }
     public function deleteUser($id)
     {

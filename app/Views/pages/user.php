@@ -346,28 +346,28 @@ $(function() {
             'status'    : $('#status option:selected').val(),
             'project'   : $('#project option:selected').val(),
         };
-        console.log(formData)
-        //$.ajax({
-        //    type        : 'POST',
-        //    url         : '<?php //= base_url('user/edit/')?>//',
-        //    data        : formData,
-        //    dataType    : 'json',
-        //    success     : function(data){
-        //        if (data.success == false)
-        //        {
-        //            console.log(data.errorDetail)
-        //        }
-        //        else
-        //        {
-        //            $('.datatables-basic').DataTable().ajax.reload();
-        //            $('#fromEdit').trigger('reset');
-        //            $("#modalEdit").modal('hide');
-        //            $(function () {
-        //                toastr.success("Data berhasil di edit")
-        //            });
-        //        }
-        //    }
-        //});
+        // console.log(formData)
+        $.ajax({
+            type        : 'POST',
+            url         : '<?= base_url('user/edit/')?>',
+            data        : formData,
+            dataType    : 'json',
+            success     : function(data){
+                if (data.success == false)
+                {
+                    console.log(data.errorDetail)
+                }
+                else
+                {
+                    $('.datatables-basic').DataTable().ajax.reload();
+                    $('#fromEdit').trigger('reset');
+                    $("#modalEdit").modal('hide');
+                    $(function () {
+                        toastr.success("Data berhasil di edit")
+                    });
+                }
+            }
+        });
     });
 });
 </script>
